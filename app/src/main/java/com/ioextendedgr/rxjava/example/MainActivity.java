@@ -12,13 +12,17 @@ import android.widget.TextView;
 import java.util.Arrays;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 
 public class MainActivity extends Activity {
     private static final String TAG = "MainActivity";
     private Button btnEmitSingleValue;
     private Button btnClear;
+    private Button btnCalculateValue;
     private TextView txtValue;
 
     @Override
@@ -28,6 +32,7 @@ public class MainActivity extends Activity {
 
         btnEmitSingleValue = (Button) findViewById(R.id.btnEmitSingleValue);
         btnClear = (Button) findViewById(R.id.btnClear);
+        btnCalculateValue = (Button) findViewById(R.id.btnCalculateValue);
         txtValue = (TextView) findViewById(R.id.txtValue);
 
         btnEmitSingleValue.setOnClickListener(new View.OnClickListener() {
@@ -37,12 +42,54 @@ public class MainActivity extends Activity {
             }
         });
 
+        btnCalculateValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calculateValue();
+            }
+        });
+
         btnClear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateTxtValue("");
             }
         });
+    }
+
+    private void calculateValue() {
+        Observable.create(new Observable.OnSubscribe<Integer>() {
+            @Override
+            public void call(Subscriber<? super Integer> subscriber) {
+                Log.i(TAG, "starting call()");
+                try {
+                    subscriber.onNext(100 + 100);
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<Integer>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.i(TAG, "onCompleted() called");
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.i(TAG, "onError() called");
+
+                    }
+
+                    @Override
+                    public void onNext(Integer integer) {
+                        Log.i(TAG, "onNext() called");
+                        updateTxtValue(integer);
+                    }
+                });
     }
 
     private void emitSingleValue() {
