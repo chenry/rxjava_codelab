@@ -25,9 +25,17 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Calculate Value"
+        android:id="@+id/btnCalculateValue"
+        android:layout_below="@+id/btnEmitSingleValue"
+        android:layout_alignParentStart="true"/>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:text="Clear"
         android:id="@+id/btnClear"
-        android:layout_below="@+id/btnEmitSingleValue"
+        android:layout_below="@+id/btnCalculateValue"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
