@@ -81,7 +81,6 @@ public class MainActivity extends Activity {
                     @Override
                     public void onError(Throwable e) {
                         Log.i(TAG, "onError() called");
-
                     }
 
                     @Override
