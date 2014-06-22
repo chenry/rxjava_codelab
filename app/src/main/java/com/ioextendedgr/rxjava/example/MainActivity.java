@@ -13,6 +13,7 @@ import java.util.Arrays;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -113,11 +114,6 @@ public class MainActivity extends Activity {
                         Log.i(TAG, "getting the integer again: " + currInteger);
                     }
                 });
-    }
-
-    private Observable<Integer> createNumberObservable() {
-        return Observable.from(Arrays.asList(1, 2, 3, 4, 5));
-
     }
 
     public void updateTxtValue(Object value) {
