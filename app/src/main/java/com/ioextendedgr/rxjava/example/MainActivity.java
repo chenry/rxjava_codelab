@@ -3,17 +3,14 @@ package com.ioextendedgr.rxjava.example;
 import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import java.util.Arrays;
+import com.ioextendedgr.rxjava.example.controller.ExampleController;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.android.observables.AndroidObservable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -25,11 +22,13 @@ public class MainActivity extends Activity {
     private Button btnClear;
     private Button btnCalculateValue;
     private TextView txtValue;
+    private ExampleController exampleController;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        exampleController = new ExampleController();
 
         btnEmitSingleValue = (Button) findViewById(R.id.btnEmitSingleValue);
         btnClear = (Button) findViewById(R.id.btnClear);
@@ -58,7 +57,37 @@ public class MainActivity extends Activity {
         });
     }
 
+    private void emitSingleValue() {
+        Observable<Integer> observable = Observable
+                .just(Integer.valueOf(1));
+
+//        Observable<Integer> observable = exampleController.createSingleValueObservable();
+
+        observable
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer currInteger) {
+                        Log.i(TAG, "emitSingleValue()->updateTxtValue()");
+                        updateTxtValue(currInteger);
+                    }
+                });
+
+//        showing that you don't have to recreate the observable, you can use
+//        the same one over and over again
+        observable
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer currInteger) {
+                        Log.i(TAG, "getting the integer again: " + currInteger);
+                    }
+                });
+
+    }
+
+
+
     private void calculateValue() {
+
         Observable.create(new Observable.OnSubscribe<Integer>() {
             @Override
             public void call(Subscriber<? super Integer> subscriber) {
@@ -88,30 +117,6 @@ public class MainActivity extends Activity {
                     public void onNext(Integer integer) {
                         Log.i(TAG, "onNext() called");
                         updateTxtValue(integer);
-                    }
-                });
-    }
-
-    private void emitSingleValue() {
-        Observable<Integer> observable = Observable
-                .just(Integer.valueOf(1));
-
-        observable
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer currInteger) {
-                        Log.i(TAG, "emitSingleValue()->updateTxtValue()");
-                        updateTxtValue(currInteger);
-                    }
-                });
-
-//        showing that you don't have to recreate the observable, you can use
-//        the same one over and over again
-        observable
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer currInteger) {
-                        Log.i(TAG, "getting the integer again: " + currInteger);
                     }
                 });
     }
